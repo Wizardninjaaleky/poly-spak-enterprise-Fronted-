@@ -17,7 +17,7 @@ interface Product {
   images: string[];
   sku: string;
   stockQty: number;
-  attributes: Record<string, string | number | boolean>;
+  attributes: Record<string, string | number | boolean | undefined>;
   description?: string;
 }
 

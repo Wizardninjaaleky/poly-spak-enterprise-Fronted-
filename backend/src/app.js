@@ -8,6 +8,7 @@ dotenv.config();
 const auth = require('./routes/auth');
 const products = require('./routes/products');
 const orders = require('./routes/orders');
+const payments = require('./routes/payments');
 const admin = require('./routes/admin');
 
 // Security middleware
@@ -22,6 +23,7 @@ securityMiddleware(app);
 app.use('/api/auth', auth);
 app.use('/api/products', products);
 app.use('/api/orders', orders);
+app.use('/api/payments', payments);
 app.use('/api/admin', admin);
 
 // Health check

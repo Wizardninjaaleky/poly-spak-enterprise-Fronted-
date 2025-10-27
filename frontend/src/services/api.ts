@@ -130,11 +130,19 @@ export const adminAPI = {
 
 // Payment API
 export const paymentAPI = {
-  initiateMPesaPayment: (paymentData: any) => api.post('/payments/mpesa/initiate', paymentData),
+  submitPayment: (paymentData: { orderId: string; transactionCode: string }) =>
+    api.post('/payments/submit', paymentData),
 
-  verifyMPesaPayment: (checkoutRequestId: string) => api.get(`/payments/mpesa/verify/${checkoutRequestId}`),
+  getOrderPayment: (orderId: string) => api.get(`/payments/order/${orderId}`),
 
   getPaymentHistory: () => api.get('/payments/history'),
+
+  verifyPayment: (orderId: string, transactionCode: string) =>
+    api.post(`/payments/verify/${orderId}`, { transactionCode }),
+
+  getPayments: (params?: any) => api.get('/payments', { params }),
+
+  getPaymentStats: () => api.get('/payments/stats'),
 };
 
 // Services API
