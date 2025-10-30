@@ -283,14 +283,25 @@ const CheckoutPage: React.FC = () => {
                   {formData.paymentMethod === 'mpesa' && (
                     <div className="mt-4 p-4 bg-green-50 border border-green-200 rounded-md">
                       <h3 className="text-sm font-medium text-green-800 mb-2">Payment Instructions:</h3>
-                      <div className="text-sm text-green-700 space-y-1">
-                        <p><strong>Bank Transfer Details:</strong></p>
-                        <p>Bank Name: KCB</p>
-                        <p>Branch: LIMURU</p>
-                        <p>Account Name: POLYSPACK ENTERPRISES</p>
-                        <p>Account No: 1343416361</p>
-                        <p className="mt-2 text-xs text-gray-600">
-                          After making the payment, enter the transaction code in your order details to complete the verification process.
+                      <div className="text-sm text-green-700 space-y-2">
+                        <p><strong>M-Pesa Paybill Details:</strong></p>
+                        <p>Paybill Number: <span className="font-semibold">522533</span></p>
+                        <p>Account Number: <span className="font-semibold">8011202</span></p>
+                        <div className="mt-3">
+                          <p className="font-medium mb-2">Follow these steps to complete your payment:</p>
+                          <ol className="list-decimal list-inside space-y-1 text-xs">
+                            <li>Open your M-Pesa menu on your phone</li>
+                            <li>Select "Lipa na M-Pesa"</li>
+                            <li>Choose "Pay Bill"</li>
+                            <li>Enter Paybill Number: <strong>522533</strong></li>
+                            <li>Enter Account Number: <strong>8011202</strong></li>
+                            <li>Enter the exact amount to pay</li>
+                            <li>Enter your M-Pesa PIN and confirm</li>
+                            <li>You will receive a confirmation SMS with the transaction code</li>
+                          </ol>
+                        </div>
+                        <p className="mt-3 text-xs text-gray-600">
+                          After making the payment, paste the M-Pesa transaction code below to verify your payment.
                         </p>
                       </div>
                     </div>

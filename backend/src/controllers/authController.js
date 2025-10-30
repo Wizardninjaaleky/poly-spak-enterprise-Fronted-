@@ -175,7 +175,7 @@ exports.updatePassword = async (req, res) => {
       });
     }
 
-    user.password = req.body.newPassword;
+    user.passwordHash = req.body.newPassword;
     await user.save();
 
     const token = user.getSignedJwtToken();

@@ -13,6 +13,7 @@ const {
   getFlashSales,
   updateFlashSale,
   deleteFlashSale,
+  getAnalytics,
 } = require('../controllers/adminController');
 
 const router = express.Router();
@@ -55,5 +56,8 @@ router
     createFlashSale
   );
 router.route('/flashsales/:id').put(updateFlashSale).delete(deleteFlashSale);
+
+// Analytics
+router.route('/analytics').get(getAnalytics);
 
 module.exports = router;

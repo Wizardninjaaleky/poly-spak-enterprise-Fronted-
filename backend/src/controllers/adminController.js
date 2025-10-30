@@ -315,3 +315,122 @@ exports.deleteFlashSale = async (req, res) => {
     });
   }
 };
+
+// @desc    Get analytics data
+// @route   GET /api/admin/analytics
+// @access  Private/Admin
+exports.getAnalytics = async (req, res) => {
+  try {
+    // Get total users count
+    const totalUsers = await User.countDocuments();
+
+    // Get total products count
+    const totalProducts = await Product.countDocuments();
+
+    // Get total orders count
+    const totalOrders = await Order.countDocuments();
+
+    // Get total revenue (sum of all order totals)
+    const revenueResult = await Order.aggregate([
+      {
+        $group: {
+          _id: null,
+          totalRevenue: { $sum: '$total' }
+        }
+      }
+    ]);
+    const totalRevenue = revenueResult.length > 0 ? revenueResult[0].totalRevenue : 0;
+
+    // Get recent orders (last 10)
+    const recentOrders = await Order.find()
+      .populate('user', 'name email')
+      .sort({ createdAt: -1 })
+      .limit(10);
+
+    // Get order status distribution
+    const orderStatusStats = await Order.aggregate([
+      {
+        $group: {
+          _id: '$status',
+          count: { $sum: 1 }
+        }
+      }
+    ]);
+
+    // Get monthly revenue for the last 12 months
+    const monthlyRevenue = await Order.aggregate([
+      {
+        $match: {
+          createdAt: {
+            $gte: new Date(Date.now() - 365 * 24 * 60 * 60 * 1000) // Last 12 months
+          }
+        }
+      },
+      {
+        $group: {
+          _id: {
+            year: { $year: '$createdAt' },
+            month: { $month: '$createdAt' }
+          },
+          revenue: { $sum: '$total' },
+          orders: { $sum: 1 }
+        }
+      },
+      {
+        $sort: { '_id.year': 1, '_id.month': 1 }
+      }
+    ]);
+
+    // Get top selling products
+    const topProducts = await Order.aggregate([
+      { $unwind: '$products' },
+      {
+        $group: {
+          _id: '$products.product',
+          totalSold: { $sum: '$products.quantity' },
+          totalRevenue: { $sum: { $multiply: ['$products.quantity', '$total'] } }
+        }
+      },
+      {
+        $lookup: {
+          from: 'products',
+          localField: '_id',
+          foreignField: '_id',
+          as: 'product'
+        }
+      },
+      { $unwind: '$product' },
+      {
+        $project: {
+          name: '$product.name',
+          totalSold: 1,
+          totalRevenue: 1
+        }
+      },
+      { $sort: { totalSold: -1 } },
+      { $limit: 10 }
+    ]);
+
+    res.status(200).json({
+      success: true,
+      data: {
+        overview: {
+          totalUsers,
+          totalProducts,
+          totalOrders,
+          totalRevenue
+        },
+        recentOrders,
+        orderStatusStats,
+        monthlyRevenue,
+        topProducts
+      }
+    });
+  } catch (error) {
+    console.error('Analytics error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Server error',
+    });
+  }
+};
