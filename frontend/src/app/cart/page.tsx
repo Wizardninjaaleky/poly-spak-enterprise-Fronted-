@@ -8,7 +8,7 @@ import { RootState, AppDispatch } from '@/store/store';
 import { removeFromCart, updateQuantity, clearCart } from '@/store/slices/cartSlice';
 
 const CartPage: React.FC = () => {
-  const { items, totalAmount } = useSelector((state: RootState) => state.cart);
+  const { items, total } = useSelector((state: RootState) => state.cart);
   const dispatch = useDispatch<AppDispatch>();
   const [loading, setLoading] = useState(false);
 
@@ -161,7 +161,7 @@ const CartPage: React.FC = () => {
               <div className="space-y-3">
                 <div className="flex justify-between text-sm">
                   <span>Subtotal ({items.length} items)</span>
-                  <span>KSh {totalAmount.toLocaleString()}</span>
+                  <span>KSh {total.toLocaleString()}</span>
                 </div>
                 <div className="flex justify-between text-sm">
                   <span>Shipping</span>
@@ -174,7 +174,7 @@ const CartPage: React.FC = () => {
                 <div className="border-t border-gray-200 pt-3">
                   <div className="flex justify-between text-lg font-semibold">
                     <span>Total</span>
-                    <span>KSh {totalAmount.toLocaleString()}</span>
+                    <span>KSh {total.toLocaleString()}</span>
                   </div>
                 </div>
               </div>
