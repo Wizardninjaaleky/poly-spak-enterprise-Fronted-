@@ -1,36 +1,37 @@
-# TODO List for Polyspack Enterprises E-commerce Website
+# Manual M-Pesa Payment Verification Implementation
 
-## Backend Setup
-- [x] Initialize backend package.json and install dependencies (Express, Mongoose, bcrypt, jsonwebtoken, helmet, cors, express-rate-limit, dotenv, express-validator, nodemon, jest, nodemailer, multer, cloudinary, express-fileupload)
-- [x] Create app.js and server.js
-- [x] Set up MongoDB connection in config/database.js
-- [x] Create Mongoose models: User, Product, Order, Coupon, FlashSale, Category, Payment
-- [x] Implement middleware: auth, validation, rate limiting, CORS, upload
-- [x] Create routes: auth, products, orders, admin
-- [x] Implement controllers for each route
-- [x] Add services for business logic (coupons, flash sales, email, MPESA, discount)
-- [x] Set up environment variables (.env)
-- [x] Test server startup and health endpoint
+## Backend Updates
+- [ ] Update Payment model schema (mpesaCode unique, paymentStatus enum, phoneNumber)
+- [ ] Modify payment controller for new workflow (submit Pending, verify Confirmed/Rejected)
+- [ ] Update payment routes and validation rules
+- [ ] Add phoneNumber to payment submission
+- [ ] Update mpesaService for new verification logic
+- [ ] Add reCAPTCHA validation middleware
 
-## Frontend Setup
-- [x] Initialize frontend with React/Next.js (choose Next.js for SEO)
-- [x] Set up Redux Toolkit for state management
-- [x] Create Redux store and slices (auth, cart, products)
-- [x] Create components: Header, Footer, ProductCard, Cart, Checkout, etc.
-- [x] Implement pages: Home, ProductList, ProductDetail, Login, Register, Dashboard, AdminDashboard
-- [x] Set up API services with axios
-- [x] Style with CSS/SCSS to match Alibaba Agro design
-- [x] Implement responsive design
+## Frontend Updates
+- [ ] Create PaymentForm component for post-checkout submission
+- [ ] Create Payment page (/payment) with form
+- [ ] Create PaymentStatus page (/payment/status) for checking verification
+- [ ] Update checkout page to redirect to payment form after order creation
+- [ ] Add Payments tab to admin dashboard with verification interface
+- [ ] Update API service calls for new endpoints
+- [ ] Integrate reCAPTCHA in payment form
 
-## Integration and Testing
-- [x] Connect frontend to backend APIs
-- [x] Implement authentication flow
-- [x] Test order flow end-to-end
-- [x] Test admin functionalities
-- [x] Ensure security measures are in place
-- [x] Deploy to recommended hosting (e.g., Render)
+## Security & Validation
+- [ ] Add reCAPTCHA integration (backend and frontend)
+- [ ] Enhance input validation and sanitization
+- [ ] Add rate limiting for payment submissions
+- [ ] Update environment variables (.env files)
 
-## Final Touches
-- [x] Add comments to all code blocks
-- [x] Optimize for performance and SEO
-- [x] Mobile-friendly testing
+## Dependencies & Deployment
+- [ ] Update backend package.json with reCAPTCHA dependency
+- [ ] Update frontend package.json if needed
+- [ ] Test complete payment flow
+- [ ] Update deployment scripts for Render
+- [ ] Ensure MongoDB Atlas connection works
+
+## Testing
+- [ ] Test payment submission flow
+- [ ] Test admin verification process
+- [ ] Test status checking
+- [ ] Test security measures (rate limiting, validation)

@@ -128,9 +128,9 @@ const CheckoutPage: React.FC = () => {
       const response = await ordersAPI.createOrder(orderData);
 
       if (response.data.success) {
-        // Clear cart and redirect to order confirmation
+        // Clear cart and redirect to payment submission page
         dispatch(clearCart());
-        router.push(`/orders/${response.data.data._id}?success=true`);
+        router.push(`/payment?orderId=${response.data.data._id}`);
       } else {
         alert('Failed to create order. Please try again.');
       }

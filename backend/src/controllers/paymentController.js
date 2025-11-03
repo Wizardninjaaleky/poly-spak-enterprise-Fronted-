@@ -3,7 +3,7 @@ const Order = require('../models/Order');
 const { validationResult } = require('express-validator');
 const { verifyPayment, getPaymentDetails, getAllPayments, getPaymentStats } = require('../services/mpesaService');
 
-// @desc    Submit payment for verification
+// @desc    Submit M-Pesa payment for verification
 // @route   POST /api/payments/submit
 // @access  Private
 exports.submitPayment = async (req, res) => {
@@ -16,7 +16,7 @@ exports.submitPayment = async (req, res) => {
     });
   }
 
-  const { orderId, transactionCode } = req.body;
+  const { orderId, amount, phoneNumber, mpesaCode } = req.body;
 
   try {
     // Check if order exists and belongs to user
@@ -42,17 +42,51 @@ exports.submitPayment = async (req, res) => {
       });
     }
 
-    // Update order with transaction code
-    order.mpesaCode = transactionCode;
-    order.paymentStatus = 'awaiting'; // Awaiting verification
+    // Check if payment already exists for this order
+    const existingPayment = await Payment.findOne({ orderId });
+    if (existingPayment) {
+      return res.status(400).json({
+        success: false,
+        message: 'Payment already submitted for this order',
+      });
+    }
+
+    // Check if M-Pesa code is already used
+    const existingCode = await Payment.findOne({ mpesaCode });
+    if (existingCode) {
+      return res.status(400).json({
+        success: false,
+        message: 'This M-Pesa code has already been used',
+      });
+    }
+
+    // Create payment record with Pending status
+    const payment = new Payment({
+      orderId,
+      userId: req.user.id,
+      amount,
+      phoneNumber,
+      mpesaCode,
+      paymentStatus: 'Pending'
+    });
+
+    await payment.save();
+
+    // Update order status to awaiting payment verification
+    order.paymentStatus = 'awaiting';
     await order.save();
 
     res.status(200).json({
       success: true,
-      message: 'Payment submitted for verification. You will receive a confirmation email once verified.',
-      data: order,
+      message: 'Payment submitted successfully. Please wait for confirmation.',
+      data: {
+        paymentId: payment._id,
+        orderId: order._id,
+        status: payment.paymentStatus
+      },
     });
   } catch (error) {
+    console.error('Payment submission error:', error);
     res.status(500).json({
       success: false,
       message: 'Server error',
@@ -135,23 +169,76 @@ exports.getPaymentHistory = async (req, res) => {
 };
 
 // @desc    Verify payment (Admin only)
-// @route   POST /api/payments/verify/:orderId
+// @route   PUT /api/payments/verify/:orderId
 // @access  Private/Admin
 exports.verifyPayment = async (req, res) => {
-  const { transactionCode } = req.body;
+  const { action, rejectionReason } = req.body; // action: 'confirm' or 'reject'
 
   try {
-    const result = await verifyPayment(req.params.orderId, transactionCode, req.user.id);
+    // Find the payment
+    const payment = await Payment.findOne({ orderId: req.params.orderId });
+    if (!payment) {
+      return res.status(404).json({
+        success: false,
+        message: 'Payment not found',
+      });
+    }
+
+    if (payment.paymentStatus !== 'Pending') {
+      return res.status(400).json({
+        success: false,
+        message: 'Payment has already been processed',
+      });
+    }
+
+    // Update payment status
+    if (action === 'confirm') {
+      payment.paymentStatus = 'Confirmed';
+      payment.verifiedBy = req.user.id;
+      payment.verifiedAt = new Date();
+
+      // Update order status
+      const order = await Order.findById(payment.orderId);
+      if (order) {
+        order.paymentStatus = 'paid';
+        order.status = 'confirmed';
+        await order.save();
+      }
+    } else if (action === 'reject') {
+      payment.paymentStatus = 'Rejected';
+      payment.verifiedBy = req.user.id;
+      payment.verifiedAt = new Date();
+      payment.rejectionReason = rejectionReason || 'Payment rejected by admin';
+
+      // Update order status
+      const order = await Order.findById(payment.orderId);
+      if (order) {
+        order.paymentStatus = 'failed';
+        order.status = 'cancelled';
+        await order.save();
+      }
+    } else {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid action. Must be "confirm" or "reject"',
+      });
+    }
+
+    await payment.save();
 
     res.status(200).json({
       success: true,
-      message: result.message,
-      data: result,
+      message: `Payment ${action}ed successfully`,
+      data: {
+        payment,
+        orderId: payment.orderId
+      },
     });
   } catch (error) {
-    res.status(400).json({
+    console.error('Payment verification error:', error);
+    res.status(500).json({
       success: false,
-      message: error.message,
+      message: 'Server error',
     });
   }
 };
