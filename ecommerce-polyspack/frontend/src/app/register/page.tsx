@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '@/store/store';
 import { setCredentials } from '@/store/slices/authSlice';
+import GoogleSignInButton from '@/components/GoogleSignInButton';
 
 const RegisterPage: React.FC = () => {
   const [formData, setFormData] = useState({
@@ -222,12 +223,13 @@ const RegisterPage: React.FC = () => {
             </div>
 
             <div className="mt-6 grid grid-cols-1 gap-3">
-              <button
-                type="button"
-                className="w-full inline-flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
-              >
-                <span>Sign up with Google</span>
-              </button>
+              <GoogleSignInButton
+                onClick={() => {
+                  // TODO: Implement Google OAuth
+                  console.log('Google sign-up clicked');
+                }}
+                text="Continue with Google"
+              />
             </div>
           </div>
         </div>
