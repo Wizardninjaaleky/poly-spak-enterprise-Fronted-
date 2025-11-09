@@ -285,8 +285,8 @@ const CheckoutPage: React.FC = () => {
                       <h3 className="text-sm font-medium text-green-800 mb-2">Payment Instructions:</h3>
                       <div className="text-sm text-green-700 space-y-2">
                         <p><strong>M-Pesa Paybill Details:</strong></p>
-                        <p>Paybill Number: <span className="font-semibold">&ldquo;522533&rdquo;</span></p>
-                        <p>Account Number: <span className="font-semibold">&ldquo;8011202&rdquo;</span></p>
+                        <p>Paybill Number: <span className="font-semibold">522533</span></p>
+                        <p>Account Number: <span className="font-semibold">8011202</span></p>
                         <div className="mt-3">
                           <p className="font-medium mb-2">Follow these steps to complete your payment:</p>
                           <ol className="list-decimal list-inside space-y-1 text-xs">

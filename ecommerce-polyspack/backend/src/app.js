@@ -26,17 +26,17 @@ app.use('/api/orders', orders);
 app.use('/api/payments', payments);
 app.use('/api/admin', admin);
 
+// Root route
+app.get('/', (req, res) => {
+  res.json({
+    success: true,
+    message: 'Polyspak Backend is running successfully 🚀'
+  });
+});
+
 // Health check
 app.get('/api/health', (req, res) => {
   res.status(200).json({ status: 'OK', message: 'Polyspack API is running' });
-});
-
-// Handle undefined routes
-app.use((req, res) => {
-  res.status(404).json({
-    success: false,
-    message: `Route ${req.originalUrl} not found`,
-  });
 });
 
 // Global error handler

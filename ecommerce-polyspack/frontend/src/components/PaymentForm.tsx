@@ -107,7 +107,7 @@ const PaymentForm: React.FC = () => {
       }
     } catch (error) {
       console.error('Payment submission error:', error);
-      const errorMessage = (error as any).response?.data?.message || 'An error occurred. Please try again.';
+      const errorMessage = (error as unknown as { response?: { data?: { message?: string } } }).response?.data?.message || 'An error occurred. Please try again.';
       alert(errorMessage);
     } finally {
       setSubmitting(false);
@@ -137,7 +137,7 @@ const PaymentForm: React.FC = () => {
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
           <h2 className="text-2xl font-bold text-gray-900 mb-4">Order Not Found</h2>
-          <p className="text-gray-600 mb-6">The order you're looking for doesn't exist.</p>
+          <p className="text-gray-600 mb-6">The order you&apos;re looking for doesn&apos;t exist.</p>
           <button
             onClick={() => router.push('/cart')}
             className="bg-green-600 text-white px-6 py-3 rounded-md hover:bg-green-700 transition-colors"
@@ -224,7 +224,7 @@ const PaymentForm: React.FC = () => {
                 required
                 value={formData.phoneNumber}
                 onChange={handleInputChange}
-                placeholder="e.g., +254712345678 or 0712345678"
+                placeholder="e.g., "+254712345678 or 0712345678""
                 className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500"
               />
               <p className="text-xs text-gray-500 mt-1">Enter the phone number you used to make the M-Pesa payment</p>
@@ -241,7 +241,7 @@ const PaymentForm: React.FC = () => {
                 required
                 value={formData.mpesaCode}
                 onChange={handleInputChange}
-                placeholder="e.g., QWE1X2Y3Z4"
+                placeholder='e.g., QWE1X2Y3Z4'
                 className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500 uppercase"
                 maxLength={15}
               />

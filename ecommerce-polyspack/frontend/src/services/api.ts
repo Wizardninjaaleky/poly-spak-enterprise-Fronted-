@@ -2,7 +2,7 @@ import axios from 'axios';
 
 // Create axios instance with base configuration
 const api = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_URL || 'https://poly-spak-ecommerce.onrender.com/api',
+  baseURL: process.env.NEXT_PUBLIC_API_URL || 'https://poly-spak-enterprise-backend-2.onrender.com/api',
   headers: {
     'Content-Type': 'application/json',
   },
@@ -95,6 +95,13 @@ export const ordersAPI = {
   cancelOrder: (id: string) => api.put(`/orders/${id}/cancel`),
 
   getOrderStatus: (id: string) => api.get(`/orders/${id}/status`),
+
+  downloadInvoice: (id: string) => api.get(`/orders/${id}/invoice`, {
+    responseType: 'blob',
+    headers: {
+      'Accept': 'application/pdf',
+    },
+  }),
 };
 
 // Admin API
