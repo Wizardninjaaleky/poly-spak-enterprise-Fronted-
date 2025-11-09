@@ -1,7 +1,9 @@
 const Order = require('../models/Order');
 const Product = require('../models/Product');
 const Coupon = require('../models/Coupon');
+const User = require('../models/User');
 const { validationResult } = require('express-validator');
+const { generateInvoice } = require('../services/invoiceService');
 
 // @desc    Get all orders
 // @route   GET /api/orders
@@ -205,6 +207,59 @@ exports.updateOrderStatus = async (req, res) => {
       data: order,
     });
   } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: 'Server error',
+    });
+  }
+};
+
+// @desc    Download invoice for order
+// @route   GET /api/orders/:id/invoice
+// @access  Private
+exports.downloadInvoice = async (req, res) => {
+  try {
+    const order = await Order.findById(req.params.id)
+      .populate('userId', 'name email')
+      .populate('items.productId', 'name price');
+
+    if (!order) {
+      return res.status(404).json({
+        success: false,
+        message: 'Order not found',
+      });
+    }
+
+    // Make sure user owns order or is admin
+    if (order.userId._id.toString() !== req.user.id && req.user.role !== 'admin') {
+      return res.status(401).json({
+        success: false,
+        message: 'Not authorized to download this invoice',
+      });
+    }
+
+    // Check if payment is confirmed
+    if (order.paymentStatus !== 'paid') {
+      return res.status(400).json({
+        success: false,
+        message: 'Invoice is only available for paid orders',
+      });
+    }
+
+    // Generate invoice PDF
+    const user = await User.findById(order.userId);
+    const pdfBuffer = await generateInvoice(order, user);
+
+    // Set headers for PDF download
+    res.setHeader('Content-Type', 'application/pdf');
+    res.setHeader('Content-Disposition', `attachment; filename=invoice-${order.orderNumber}.pdf`);
+    res.setHeader('Content-Length', pdfBuffer.length);
+
+    // Send PDF buffer
+    res.send(pdfBuffer);
+
+  } catch (error) {
+    console.error('Invoice download error:', error);
     res.status(500).json({
       success: false,
       message: 'Server error',

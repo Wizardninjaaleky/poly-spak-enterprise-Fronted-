@@ -95,6 +95,13 @@ export const ordersAPI = {
   cancelOrder: (id: string) => api.put(`/orders/${id}/cancel`),
 
   getOrderStatus: (id: string) => api.get(`/orders/${id}/status`),
+
+  downloadInvoice: (id: string) => api.get(`/orders/${id}/invoice`, {
+    responseType: 'blob',
+    headers: {
+      'Accept': 'application/pdf',
+    },
+  }),
 };
 
 // Admin API

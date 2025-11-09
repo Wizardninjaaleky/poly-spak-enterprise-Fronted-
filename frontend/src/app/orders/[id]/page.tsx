@@ -325,8 +325,27 @@ const OrderDetailPage: React.FC = () => {
                     </button>
                   )}
 
-                  <button className="w-full bg-gray-100 text-gray-700 py-2 px-4 rounded-md hover:bg-gray-200 transition-colors">
-                    Download Invoice
+                  <button
+                    onClick={async () => {
+                      try {
+                        const response = await ordersAPI.downloadInvoice(orderId);
+                        const url = window.URL.createObjectURL(new Blob([response.data]));
+                        const link = document.createElement('a');
+                        link.href = url;
+                        link.setAttribute('download', `invoice-${order.orderNumber}.pdf`);
+                        document.body.appendChild(link);
+                        link.click();
+                        link.remove();
+                        window.URL.revokeObjectURL(url);
+                      } catch (error) {
+                        console.error('Error downloading invoice:', error);
+                        alert('Failed to download invoice. Please try again.');
+                      }
+                    }}
+                    className="w-full bg-green-600 text-white py-2 px-4 rounded-md hover:bg-green-700 transition-colors"
+                    disabled={order.paymentStatus !== 'paid'}
+                  >
+                    {order.paymentStatus === 'paid' ? 'Download Invoice' : 'Invoice Available After Payment'}
                   </button>
 
                   <button className="w-full bg-gray-100 text-gray-700 py-2 px-4 rounded-md hover:bg-gray-200 transition-colors">

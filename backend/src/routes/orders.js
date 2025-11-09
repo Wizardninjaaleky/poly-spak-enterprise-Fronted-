@@ -6,6 +6,7 @@ const {
   getMyOrders,
   createOrder,
   updateOrderStatus,
+  downloadInvoice,
 } = require('../controllers/orderController');
 
 const router = express.Router();
@@ -31,6 +32,7 @@ router
   );
 
 router.get('/:id', getOrder);
+router.get('/:id/invoice', downloadInvoice);
 router.put('/:id/status', authorize('admin'), updateOrderStatus);
 
 module.exports = router;
