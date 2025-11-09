@@ -96,7 +96,7 @@ export default function HomePage() {
                 Welcome to Polyspack Enterprises
               </h1>
               <p className="text-xl md:text-2xl mb-8 max-w-3xl mx-auto animate-fade-in-up opacity-0" style={{animationDelay: '4s', animationFillMode: 'forwards'}}>
-                Your trusted partner for <span className="font-semibold text-yellow-200">seedling bags</span>, <span className="font-semibold text-yellow-200">electronics</span>, and <span className="font-semibold text-yellow-200">professional services</span>.
+                Your trusted partner for seedling bags, electronics, and professional services.
                 Quality products with countrywide delivery across Kenya.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center animate-fade-in-up opacity-0" style={{animationDelay: '4.5s', animationFillMode: 'forwards'}}>
@@ -200,7 +200,7 @@ export default function HomePage() {
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold text-gray-900 mb-4 animate-fade-in-up">Why Choose Polyspack?</h2>
             <p className="text-lg text-gray-600 animate-fade-in-up" style={{animationDelay: '0.2s'}}>
-              We're committed to providing exceptional products and services
+              We&apos;re committed to providing exceptional products and services
             </p>
           </div>
 

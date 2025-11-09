@@ -107,7 +107,7 @@ const PaymentForm: React.FC = () => {
       }
     } catch (error) {
       console.error('Payment submission error:', error);
-      const errorMessage = (error as any).response?.data?.message || 'An error occurred. Please try again.';
+      const errorMessage = (error as unknown as { response?: { data?: { message?: string } } }).response?.data?.message || 'An error occurred. Please try again.';
       alert(errorMessage);
     } finally {
       setSubmitting(false);
@@ -137,7 +137,7 @@ const PaymentForm: React.FC = () => {
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
           <h2 className="text-2xl font-bold text-gray-900 mb-4">Order Not Found</h2>
-          <p className="text-gray-600 mb-6">The order you're looking for doesn't exist.</p>
+          <p className="text-gray-600 mb-6">The order you&apos;re looking for doesn&apos;t exist.</p>
           <button
             onClick={() => router.push('/cart')}
             className="bg-green-600 text-white px-6 py-3 rounded-md hover:bg-green-700 transition-colors"
@@ -196,8 +196,8 @@ const PaymentForm: React.FC = () => {
                 <p className="font-medium mb-2">Steps to complete payment:</p>
                 <ol className="list-decimal list-inside space-y-1">
                   <li>Open your M-Pesa menu on your phone</li>
-                  <li>Select "Lipa na M-Pesa"</li>
-                  <li>Choose "Pay Bill"</li>
+                  <li>Select &ldquo;Lipa na M-Pesa&rdquo;</li>
+                  <li>Choose &ldquo;Pay Bill&rdquo;</li>
                   <li>Enter Paybill Number: <strong>522533</strong></li>
                   <li>Enter Account Number: <strong>8011202</strong></li>
                   <li>Enter the exact amount: <strong>KSh {order.totalAmount.toLocaleString()}</strong></li>
@@ -241,7 +241,7 @@ const PaymentForm: React.FC = () => {
                 required
                 value={formData.mpesaCode}
                 onChange={handleInputChange}
-                placeholder="e.g., QWE1X2Y3Z4"
+                placeholder='e.g., QWE1X2Y3Z4'
                 className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500 uppercase"
                 maxLength={15}
               />
