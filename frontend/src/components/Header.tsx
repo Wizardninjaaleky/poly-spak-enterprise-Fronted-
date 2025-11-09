@@ -24,8 +24,14 @@ const Header: React.FC = () => {
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
           <Link href="/" className="flex items-center">
-            <span className="text-2xl font-bold text-green-600">Polyspack</span>
-            <span className="text-sm text-gray-600 ml-2">Enterprises</span>
+            <div className="w-10 h-10 mr-3 bg-gray-200 rounded-full flex items-center justify-center">
+              {/* Logo placeholder - replace with actual logo image */}
+              <span className="text-green-600 font-bold text-lg">P</span>
+            </div>
+            <div className="flex flex-col">
+              <span className="text-2xl font-bold text-green-600">Polyspack</span>
+              <span className="text-sm text-gray-600">Enterprises</span>
+            </div>
           </Link>
 
           {/* Desktop Navigation */}

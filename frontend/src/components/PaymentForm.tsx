@@ -1,14 +1,21 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/store/store';
 import { paymentAPI, ordersAPI } from '@/services/api';
+import ReCAPTCHA from 'react-google-recaptcha';
 
 interface PaymentFormData {
   phoneNumber: string;
   mpesaCode: string;
+}
+
+interface Order {
+  orderNumber: string;
+  totalAmount: number;
+  paymentStatus: string;
 }
 
 const PaymentForm: React.FC = () => {
@@ -23,9 +30,11 @@ const PaymentForm: React.FC = () => {
     mpesaCode: ''
   });
 
-  const [order, setOrder] = useState<any>(null);
+  const [order, setOrder] = useState<Order | null>(null);
   const [loading, setLoading] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [recaptchaToken, setRecaptchaToken] = useState<string | null>(null);
+  const recaptchaRef = useRef<ReCAPTCHA>(null);
 
   // Redirect if not logged in or no orderId
   useEffect(() => {
@@ -72,6 +81,11 @@ const PaymentForm: React.FC = () => {
     e.preventDefault();
     if (!order) return;
 
+    if (!recaptchaToken) {
+      alert('Please complete the reCAPTCHA verification.');
+      return;
+    }
+
     setSubmitting(true);
 
     try {
@@ -79,7 +93,8 @@ const PaymentForm: React.FC = () => {
         orderId,
         amount: order.totalAmount,
         phoneNumber: formData.phoneNumber,
-        mpesaCode: formData.mpesaCode
+        mpesaCode: formData.mpesaCode,
+        recaptchaToken
       };
 
       const response = await paymentAPI.submitPayment(paymentData);
@@ -90,13 +105,20 @@ const PaymentForm: React.FC = () => {
       } else {
         alert(response.data.message || 'Payment submission failed. Please try again.');
       }
-    } catch (error: any) {
+    } catch (error) {
       console.error('Payment submission error:', error);
-      const errorMessage = error.response?.data?.message || 'An error occurred. Please try again.';
+      const errorMessage = (error as any).response?.data?.message || 'An error occurred. Please try again.';
       alert(errorMessage);
     } finally {
       setSubmitting(false);
+      // Reset reCAPTCHA
+      setRecaptchaToken(null);
+      recaptchaRef.current?.reset();
     }
+  };
+
+  const onRecaptchaChange = (token: string | null) => {
+    setRecaptchaToken(token);
   };
 
   if (loading) {
@@ -226,11 +248,13 @@ const PaymentForm: React.FC = () => {
               <p className="text-xs text-gray-500 mt-1">Enter the transaction code from your M-Pesa confirmation SMS</p>
             </div>
 
-            {/* reCAPTCHA placeholder - will be implemented */}
-            <div className="bg-yellow-50 border border-yellow-200 rounded-md p-4">
-              <p className="text-sm text-yellow-800">
-                <strong>Note:</strong> reCAPTCHA verification will be required to prevent spam submissions.
-              </p>
+            {/* reCAPTCHA */}
+            <div className="flex justify-center">
+              <ReCAPTCHA
+                ref={recaptchaRef}
+                sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || '6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI'}
+                onChange={onRecaptchaChange}
+              />
             </div>
 
             <button

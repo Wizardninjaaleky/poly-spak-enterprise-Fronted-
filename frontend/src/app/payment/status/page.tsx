@@ -7,6 +7,40 @@ import { useSelector } from 'react-redux';
 import { RootState } from '@/store/store';
 import { ordersAPI } from '@/services/api';
 
+interface OrderItem {
+  productId: {
+    _id: string;
+    name: string;
+    price: number;
+    images: string[];
+  };
+  qty: number;
+  price: number;
+}
+
+interface Order {
+  _id: string;
+  orderNumber: string;
+  status: string;
+  paymentStatus: string;
+  totalAmount: number;
+  shippingAmount: number;
+  discountAmount: number;
+  items: OrderItem[];
+  delivery: {
+    type: string;
+    address?: {
+      street: string;
+      city: string;
+      county: string;
+      town: string;
+      country: string;
+    };
+  };
+  createdAt: string;
+  updatedAt: string;
+}
+
 const PaymentStatusPage: React.FC = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -14,7 +48,7 @@ const PaymentStatusPage: React.FC = () => {
 
   const orderId = searchParams.get('orderId');
 
-  const [order, setOrder] = useState<any>(null);
+  const [order, setOrder] = useState<Order | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -39,7 +73,7 @@ const PaymentStatusPage: React.FC = () => {
         setLoading(true);
         const response = await ordersAPI.getOrder(orderId);
         setOrder(response.data.data);
-      } catch (err: any) {
+      } catch (err: unknown) {
         console.error('Error fetching order:', err);
         setError('Failed to load order details. Please try again.');
       } finally {
@@ -79,7 +113,7 @@ const PaymentStatusPage: React.FC = () => {
   }
 
   const getStatusInfo = () => {
-    switch (order.paymentStatus) {
+    switch (order.paymentStatus as string) {
       case 'confirmed':
         return {
           icon: '✅',
@@ -136,9 +170,9 @@ const PaymentStatusPage: React.FC = () => {
               <div className="flex justify-between">
                 <span className="text-gray-600">Payment Status:</span>
                 <span className={`px-2 py-1 text-xs rounded ${
-                  order.paymentStatus === 'confirmed'
+                  (order.paymentStatus as string) === 'confirmed'
                     ? 'bg-green-100 text-green-800'
-                    : order.paymentStatus === 'rejected'
+                    : (order.paymentStatus as string) === 'rejected'
                     ? 'bg-red-100 text-red-800'
                     : 'bg-yellow-100 text-yellow-800'
                 }`}>
@@ -149,11 +183,11 @@ const PaymentStatusPage: React.FC = () => {
               <div className="flex justify-between">
                 <span className="text-gray-600">Order Status:</span>
                 <span className={`px-2 py-1 text-xs rounded ${
-                  order.status === 'processing'
+                  (order.status as string) === 'processing'
                     ? 'bg-blue-100 text-blue-800'
-                    : order.status === 'shipped'
+                    : (order.status as string) === 'shipped'
                     ? 'bg-purple-100 text-purple-800'
-                    : order.status === 'delivered'
+                    : (order.status as string) === 'delivered'
                     ? 'bg-green-100 text-green-800'
                     : 'bg-gray-100 text-gray-800'
                 }`}>
@@ -195,7 +229,7 @@ const PaymentStatusPage: React.FC = () => {
               <h3 className="text-sm font-medium text-blue-800 mb-2">What happens next?</h3>
               <ul className="text-sm text-blue-700 space-y-1">
                 <li>• Our system will verify your M-Pesa payment</li>
-                <li>• You'll receive an email confirmation once verified</li>
+                <li>• You&apos;ll receive an email confirmation once verified</li>
                 <li>• Processing usually takes 5-10 minutes</li>
                 <li>• You can check this page anytime for updates</li>
               </ul>

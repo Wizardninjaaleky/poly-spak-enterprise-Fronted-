@@ -17,7 +17,7 @@ const AdminDashboardPage: React.FC = () => {
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
           <h2 className="text-2xl font-bold text-gray-900 mb-4">Access Denied</h2>
-          <p className="text-gray-600 mb-6">Admin access required.</p>
+          <p className="text-gray-600 mb-6">Admin&apos;s access required.</p>
           <Link
             href="/login"
             className="bg-green-600 text-white px-6 py-3 rounded-md hover:bg-green-700 transition-colors"
@@ -33,6 +33,7 @@ const AdminDashboardPage: React.FC = () => {
     { id: 'overview', label: 'Dashboard', icon: '📊' },
     { id: 'products', label: 'Products', icon: '📦' },
     { id: 'orders', label: 'Orders', icon: '📋' },
+    { id: 'payments', label: 'Payments', icon: '💰' },
     { id: 'users', label: 'Users', icon: '👥' },
     { id: 'coupons', label: 'Coupons', icon: '🎫' },
     { id: 'promotions', label: 'Promotions', icon: '⚡' },
@@ -340,6 +341,143 @@ const AdminDashboardPage: React.FC = () => {
                 </div>
               )}
 
+              {activeTab === 'payments' && (
+                <div>
+                  <h1 className="text-3xl font-bold text-gray-900 mb-6">Payment Verification</h1>
+
+                  {/* Payment Stats */}
+                  <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+                    <div className="bg-yellow-50 p-6 rounded-lg">
+                      <div className="flex items-center">
+                        <div className="text-3xl mr-4">⏳</div>
+                        <div>
+                          <p className="text-sm text-gray-600">Pending Verification</p>
+                          <p className="text-2xl font-bold text-gray-900">12</p>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="bg-green-50 p-6 rounded-lg">
+                      <div className="flex items-center">
+                        <div className="text-3xl mr-4">✅</div>
+                        <div>
+                          <p className="text-sm text-gray-600">Verified Today</p>
+                          <p className="text-2xl font-bold text-gray-900">8</p>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="bg-red-50 p-6 rounded-lg">
+                      <div className="flex items-center">
+                        <div className="text-3xl mr-4">❌</div>
+                        <div>
+                          <p className="text-sm text-gray-600">Rejected Today</p>
+                          <p className="text-2xl font-bold text-gray-900">2</p>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="bg-blue-50 p-6 rounded-lg">
+                      <div className="flex items-center">
+                        <div className="text-3xl mr-4">💰</div>
+                        <div>
+                          <p className="text-sm text-gray-600">Total Processed</p>
+                          <p className="text-2xl font-bold text-gray-900">KSh 45,200</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Pending Payments */}
+                  <div className="space-y-4">
+                    <h2 className="text-xl font-semibold text-gray-900">Pending Payment Verifications</h2>
+
+                    <div className="border border-gray-200 rounded-lg p-4">
+                      <div className="flex justify-between items-start mb-4">
+                        <div>
+                          <p className="font-medium text-gray-900">Order #12350</p>
+                          <p className="text-sm text-gray-600">Customer: John Doe</p>
+                          <p className="text-sm text-gray-600">Phone: +254712345678</p>
+                          <p className="text-sm text-gray-600">M-Pesa Code: QWE1X2Y3Z4</p>
+                          <p className="text-sm text-gray-600">Amount: KSh 3,200</p>
+                        </div>
+                        <div className="text-right">
+                          <span className="px-2 py-1 text-xs bg-yellow-100 text-yellow-800 rounded mb-2 block">Pending</span>
+                          <div className="space-x-2">
+                            <button className="px-3 py-1 bg-green-600 text-white text-sm rounded hover:bg-green-700">
+                              Verify
+                            </button>
+                            <button className="px-3 py-1 bg-red-600 text-white text-sm rounded hover:bg-red-700">
+                              Reject
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="border border-gray-200 rounded-lg p-4">
+                      <div className="flex justify-between items-start mb-4">
+                        <div>
+                          <p className="font-medium text-gray-900">Order #12349</p>
+                          <p className="text-sm text-gray-600">Customer: Jane Smith</p>
+                          <p className="text-sm text-gray-600">Phone: +254798765432</p>
+                          <p className="text-sm text-gray-600">M-Pesa Code: ABC5D6E7F8</p>
+                          <p className="text-sm text-gray-600">Amount: KSh 1,800</p>
+                        </div>
+                        <div className="text-right">
+                          <span className="px-2 py-1 text-xs bg-yellow-100 text-yellow-800 rounded mb-2 block">Pending</span>
+                          <div className="space-x-2">
+                            <button className="px-3 py-1 bg-green-600 text-white text-sm rounded hover:bg-green-700">
+                              Verify
+                            </button>
+                            <button className="px-3 py-1 bg-red-600 text-white text-sm rounded hover:bg-red-700">
+                              Reject
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Recent Verifications */}
+                  <div className="mt-8">
+                    <h2 className="text-xl font-semibold text-gray-900 mb-4">Recent Verifications</h2>
+                    <div className="overflow-x-auto">
+                      <table className="min-w-full table-auto">
+                        <thead>
+                          <tr className="bg-gray-50">
+                            <th className="px-4 py-2 text-left">Order ID</th>
+                            <th className="px-4 py-2 text-left">Customer</th>
+                            <th className="px-4 py-2 text-left">Amount</th>
+                            <th className="px-4 py-2 text-left">Status</th>
+                            <th className="px-4 py-2 text-left">Verified By</th>
+                            <th className="px-4 py-2 text-left">Date</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr className="border-t">
+                            <td className="px-4 py-2">#12348</td>
+                            <td className="px-4 py-2">Alice Johnson</td>
+                            <td className="px-4 py-2">KSh 2,500</td>
+                            <td className="px-4 py-2"><span className="px-2 py-1 text-xs bg-green-100 text-green-800 rounded">Verified</span></td>
+                            <td className="px-4 py-2">Admin</td>
+                            <td className="px-4 py-2">Dec 20, 2024</td>
+                          </tr>
+                          <tr className="border-t">
+                            <td className="px-4 py-2">#12347</td>
+                            <td className="px-4 py-2">Bob Wilson</td>
+                            <td className="px-4 py-2">KSh 4,200</td>
+                            <td className="px-4 py-2"><span className="px-2 py-1 text-xs bg-red-100 text-red-800 rounded">Rejected</span></td>
+                            <td className="px-4 py-2">Admin</td>
+                            <td className="px-4 py-2">Dec 20, 2024</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              )}
+
               {activeTab === 'analytics' && (
                 <div>
                   <h1 className="text-3xl font-bold text-gray-900 mb-6">Analytics & Reports</h1>
@@ -349,7 +487,7 @@ const AdminDashboardPage: React.FC = () => {
                       <h3 className="text-lg font-semibold mb-4">Sales Overview</h3>
                       <div className="space-y-3">
                         <div className="flex justify-between">
-                          <span>Today's Sales</span>
+                          <span>Today&apos;s Sales</span>
                           <span className="font-medium">KSh 45,200</span>
                         </div>
                         <div className="flex justify-between">

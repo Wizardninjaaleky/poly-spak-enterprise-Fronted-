@@ -130,7 +130,7 @@ export const adminAPI = {
 
 // Payment API
 export const paymentAPI = {
-  submitPayment: (paymentData: { orderId: string; transactionCode: string }) =>
+  submitPayment: (paymentData: { orderId: string | null; amount: number; phoneNumber: string; mpesaCode: string; recaptchaToken: string }) =>
     api.post('/payments/submit', paymentData),
 
   getOrderPayment: (orderId: string) => api.get(`/payments/order/${orderId}`),

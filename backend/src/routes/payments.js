@@ -13,6 +13,7 @@ const {
 const router = express.Router();
 
 const { protect, authorize } = require('../middleware/auth');
+const { paymentRateLimit } = require('../middleware/rateLimit');
 
 // Initialize reCAPTCHA
 const recaptchaInstance = new recaptcha(
@@ -26,12 +27,14 @@ router.use(protect);
 // User payment routes
 router.post(
   '/submit',
+  paymentRateLimit,
   recaptchaInstance.middleware.verify,
   [
     body('orderId', 'Order ID is required').isMongoId(),
     body('amount', 'Amount is required').isFloat({ min: 0 }),
     body('phoneNumber', 'Phone number is required').isMobilePhone('any'),
     body('mpesaCode', 'M-Pesa code is required').not().isEmpty().isLength({ min: 10, max: 15 }),
+    body('recaptchaToken', 'reCAPTCHA token is required').not().isEmpty(),
   ],
   submitPayment
 );

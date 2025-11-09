@@ -1,6 +1,7 @@
 const User = require('../models/User');
 const Coupon = require('../models/Coupon');
 const FlashSale = require('../models/FlashSale');
+const WebsiteSettings = require('../models/WebsiteSettings');
 const { validationResult } = require('express-validator');
 
 // @desc    Get all users
