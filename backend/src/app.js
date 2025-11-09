@@ -39,14 +39,6 @@ app.get('/api/health', (req, res) => {
   res.status(200).json({ status: 'OK', message: 'Polyspack API is running' });
 });
 
-// Handle undefined routes
-app.use((req, res) => {
-  res.status(404).json({
-    success: false,
-    message: `Route ${req.originalUrl} not found`,
-  });
-});
-
 // Global error handler
 app.use((err, req, res, next) => {
   console.error(err.stack);
