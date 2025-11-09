@@ -30,7 +30,7 @@ app.use('/api/admin', admin);
 app.get('/', (req, res) => {
   res.json({
     success: true,
-    message: 'Backend API is running successfully 🚀'
+    message: 'Polyspak Backend is running successfully 🚀'
   });
 });
 
