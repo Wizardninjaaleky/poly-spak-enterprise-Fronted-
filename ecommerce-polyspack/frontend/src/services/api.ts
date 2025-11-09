@@ -49,7 +49,7 @@ export const authAPI = {
 
   getProfile: () => api.get('/auth/profile'),
 
-  updateProfile: (userData: any) => api.put('/auth/profile', userData),
+  updateProfile: (userData: { name?: string; email?: string; phone?: string }) => api.put('/auth/profile', userData),
 
   forgotPassword: (email: string) => api.post('/auth/forgot-password', { email }),
 
