@@ -14,7 +14,7 @@ const LoginPage: React.FC = () => {
     password: ''
   });
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
+  const [error] = useState('');
 
   const dispatch = useDispatch<AppDispatch>();
   const router = useRouter();

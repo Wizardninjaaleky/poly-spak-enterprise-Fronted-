@@ -17,7 +17,7 @@ const RegisterPage: React.FC = () => {
     phone: ''
   });
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
+  const [error] = useState('');
 
   const dispatch = useDispatch<AppDispatch>();
   const router = useRouter();

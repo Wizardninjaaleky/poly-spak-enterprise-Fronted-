@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import ProductCard from '@/components/ProductCard';
@@ -19,7 +19,7 @@ interface Product {
   description?: string;
 }
 
-const ProductsPage: React.FC = () => {
+const ProductsContent: React.FC = () => {
   const searchParams = useSearchParams();
   const categoryFilter = searchParams.get('category');
 
@@ -282,6 +282,21 @@ const ProductsPage: React.FC = () => {
         </div>
       </div>
     </div>
+  );
+};
+
+const ProductsPage: React.FC = () => {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600 mx-auto"></div>
+          <p className="mt-4 text-gray-600">Loading...</p>
+        </div>
+      </div>
+    }>
+      <ProductsContent />
+    </Suspense>
   );
 };
 
