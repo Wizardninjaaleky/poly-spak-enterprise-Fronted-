@@ -44,9 +44,9 @@ const CheckoutPage: React.FC = () => {
     couponCode: ''
   });
 
-  const [loading, setLoading] = useState(false);
   const [couponDiscount, setCouponDiscount] = useState(0);
   const [finalTotal, setFinalTotal] = useState(totalAmount);
+  const [loading] = useState(false);
 
   // Redirect if cart is empty or user not logged in
   useEffect(() => {
@@ -103,7 +103,7 @@ const CheckoutPage: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
+    // setLoading(true);
 
     try {
       // Prepare order data
@@ -138,7 +138,7 @@ const CheckoutPage: React.FC = () => {
       console.error('Checkout error:', error);
       alert('An error occurred during checkout. Please try again.');
     } finally {
-      setLoading(false);
+      // setLoading(false);
     }
   };
 
@@ -291,8 +291,8 @@ const CheckoutPage: React.FC = () => {
                           <p className="font-medium mb-2">Follow these steps to complete your payment:</p>
                           <ol className="list-decimal list-inside space-y-1 text-xs">
                             <li>Open your M-Pesa menu on your phone</li>
-                            <li>Select &ldquo;Lipa na M-Pesa&rdquo;</li>
-                            <li>Choose &ldquo;Pay Bill&rdquo;</li>
+                            <li>Select{"\u201C"}Lipa na M-Pesa{"\u201D"}</li>
+                            <li>Choose{"\u201C"}Pay Bill{"\u201D"}</li>
                             <li>Enter Paybill Number: <strong>522533</strong></li>
                             <li>Enter Account Number: <strong>8011202</strong></li>
                             <li>Enter the exact amount to pay</li>
@@ -413,20 +413,9 @@ const CheckoutPage: React.FC = () => {
               <button
                 type="submit"
                 onClick={handleSubmit}
-                disabled={loading}
-                className="w-full mt-6 bg-green-600 text-white py-3 px-4 rounded-md hover:bg-green-700 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed flex items-center justify-center"
+                className="w-full mt-6 bg-green-600 text-white py-3 px-4 rounded-md hover:bg-green-700 transition-colors flex items-center justify-center"
               >
-                {loading ? (
-                  <>
-                    <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" fill="none" viewBox="0 0 24 24">
-                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                    </svg>
-                    Processing...
-                  </>
-                ) : (
-                  `Complete Order - KSh ${(finalTotal + (formData.deliveryType === 'delivery' ? 500 : 0)).toLocaleString()}`
-                )}
+                Complete Order - KSh {(finalTotal + (formData.deliveryType === 'delivery' ? 500 : 0)).toLocaleString()}
               </button>
 
               <div className="mt-4 text-center">
