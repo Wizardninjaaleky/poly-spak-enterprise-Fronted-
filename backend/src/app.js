@@ -6,6 +6,8 @@ import dotenv from 'dotenv';
 // Load environment variables
 dotenv.config();
 
+console.log('✅ app.js is loading...');
+
 const app = express();
 
 // Middleware
@@ -30,6 +32,15 @@ app.get('/health', (req, res) => {
   res.status(200).json({
     success: true,
     message: 'Server is healthy',
+    timestamp: new Date().toISOString()
+  });
+});
+
+// Test route
+app.get('/test', (req, res) => {
+  res.json({
+    success: true,
+    message: 'Test route working!',
     timestamp: new Date().toISOString()
   });
 });
