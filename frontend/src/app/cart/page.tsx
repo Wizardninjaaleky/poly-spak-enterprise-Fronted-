@@ -10,7 +10,6 @@ import { removeFromCart, updateQuantity, clearCart } from '@/store/slices/cartSl
 const CartPage: React.FC = () => {
   const { items, total } = useSelector((state: RootState) => state.cart);
   const dispatch = useDispatch<AppDispatch>();
-  const [loading, setLoading] = useState(false);
 
   const handleQuantityChange = (id: string, quantity: number) => {
     if (quantity > 0) {
@@ -24,14 +23,6 @@ const CartPage: React.FC = () => {
 
   const handleClearCart = () => {
     dispatch(clearCart());
-  };
-
-  const handleCheckout = async () => {
-    setLoading(true);
-    // Mock checkout process
-    await new Promise(resolve => setTimeout(resolve, 2000));
-    setLoading(false);
-    // Redirect to checkout or show success message
   };
 
   if (items.length === 0) {

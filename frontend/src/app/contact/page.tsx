@@ -12,7 +12,7 @@ const ContactPage: React.FC = () => {
     message: ''
   });
   const [loading, setLoading] = useState(false);
-  const [submitted, setSubmitted] = useState(false);
+  const submitted = false;
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     setFormData({
@@ -29,7 +29,6 @@ const ContactPage: React.FC = () => {
     await new Promise(resolve => setTimeout(resolve, 2000));
 
     setLoading(false);
-    setSubmitted(true);
     setFormData({
       name: '',
       email: '',
@@ -151,7 +150,7 @@ const ContactPage: React.FC = () => {
                   Thank you for contacting us. We&apos;ll get back to you within 24 hours.
                 </p>
                 <button
-                  onClick={() => setSubmitted(false)}
+                  onClick={() => {/* setSubmitted(false) */}}
                   className="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 transition-colors"
                 >
                   Send Another Message
