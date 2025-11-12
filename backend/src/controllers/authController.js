@@ -1,10 +1,10 @@
-const User = require('../models/User');
-const { validationResult } = require('express-validator');
+import User from '../models/User.js';
+import { validationResult } from 'express-validator';
 
 // @desc    Register user
 // @route   POST /api/auth/register
 // @access  Public
-exports.register = async (req, res) => {
+export const register = async (req, res) => {
   // Check for validation errors
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -59,7 +59,7 @@ exports.register = async (req, res) => {
 // @desc    Login user
 // @route   POST /api/auth/login
 // @access  Public
-exports.login = async (req, res) => {
+export const login = async (req, res) => {
   const { email, password } = req.body;
 
   // Validate email & password
@@ -115,7 +115,7 @@ exports.login = async (req, res) => {
 // @desc    Get current logged in user
 // @route   GET /api/auth/me
 // @access  Private
-exports.getMe = async (req, res) => {
+export const getMe = async (req, res) => {
   try {
     const user = await User.findById(req.user.id);
 
@@ -134,7 +134,7 @@ exports.getMe = async (req, res) => {
 // @desc    Update user details
 // @route   PUT /api/auth/updatedetails
 // @access  Private
-exports.updateDetails = async (req, res) => {
+export const updateDetails = async (req, res) => {
   const fieldsToUpdate = {
     name: req.body.name,
     email: req.body.email,
@@ -163,7 +163,7 @@ exports.updateDetails = async (req, res) => {
 // @desc    Update password
 // @route   PUT /api/auth/updatepassword
 // @access  Private
-exports.updatePassword = async (req, res) => {
+export const updatePassword = async (req, res) => {
   try {
     const user = await User.findById(req.user.id).select('+passwordHash');
 
@@ -195,7 +195,7 @@ exports.updatePassword = async (req, res) => {
 // @desc    Logout user / clear cookie
 // @route   GET /api/auth/logout
 // @access  Private
-exports.logout = async (req, res) => {
+export const logout = async (req, res) => {
   res.status(200).json({
     success: true,
     data: {},
