@@ -48,7 +48,8 @@ app.get('/test', (req, res) => {
 
 
 // Add your other routes here when ready
-// app.use('/api/auth', authRoutes);
+import auth from './routes/auth.js';
+app.use('/api/auth', auth);
 // app.use('/api/users', userRoutes);
 
 // 404 handler for undefined routes
