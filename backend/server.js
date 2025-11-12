@@ -3,7 +3,7 @@ import cors from 'cors';
 import helmet from 'helmet';
 import dotenv from 'dotenv';
 import connectDB from './src/config/database.js';
-import authRoutes from './src/routes/authRoutes.js';
+import authRoutes from './src/routes/auth.js';
 
 // Load environment variables
 dotenv.config();
@@ -109,4 +109,3 @@ process.on('uncaughtException', (err) => {
   process.exit(1);
 });
 
-export default app;
