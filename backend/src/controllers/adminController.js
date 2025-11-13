@@ -1,8 +1,10 @@
-const User = require('../models/User');
-const Coupon = require('../models/Coupon');
-const FlashSale = require('../models/FlashSale');
-const WebsiteSettings = require('../models/WebsiteSettings');
-const { validationResult } = require('express-validator');
+import User from '../models/User.js';
+import Coupon from '../models/Coupon.js';
+import FlashSale from '../models/FlashSale.js';
+import WebsiteSettings from '../models/WebsiteSettings.js';
+import Product from '../models/Product.js';
+import Order from '../models/Order.js';
+import { validationResult } from 'express-validator';
 
 // @desc    Get all users
 // @route   GET /api/admin/users
