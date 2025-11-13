@@ -50,6 +50,11 @@ app.get('/test', (req, res) => {
 // Add your other routes here when ready
 import auth from './routes/auth.js';
 app.use('/api/auth', auth);
+
+// Import and use admin routes
+import admin from './routes/admin.js';
+app.use('/api/admin', admin);
+
 // app.use('/api/users', userRoutes);
 
 // 404 handler for undefined routes
