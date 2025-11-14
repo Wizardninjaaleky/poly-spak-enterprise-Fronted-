@@ -272,7 +272,7 @@ export const getPayments = async (req, res) => {
 // @desc    Get payment statistics (Admin only)
 // @route   GET /api/payments/stats
 // @access  Private/Admin
-export const getPaymentStats = async (req, res) => {
+export const getPaymentStatsAdmin = async (req, res) => {
   try {
     const stats = await getPaymentStats();
 

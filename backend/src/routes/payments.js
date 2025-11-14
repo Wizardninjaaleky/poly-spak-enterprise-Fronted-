@@ -6,7 +6,7 @@ import {
   getPaymentHistory,
   verifyPaymentAdmin,
   getPayments,
-  getPaymentStats,
+  getPaymentStatsAdmin,
 } from '../controllers/paymentController.js';
 
 const router = express.Router();
@@ -46,6 +46,6 @@ router.put('/verify/:orderId', [
 ], verifyPaymentAdmin);
 
 router.get('/payments', getPayments);
-router.get('/payments/stats', getPaymentStats);
+router.get('/payments/stats', getPaymentStatsAdmin);
 
 export default router;
