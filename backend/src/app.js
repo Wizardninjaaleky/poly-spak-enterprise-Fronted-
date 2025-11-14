@@ -10,9 +10,22 @@ console.log('✅ app.js is loading...');
 
 const app = express();
 
+// CORS Configuration
+const corsOptions = {
+  origin: [
+    'http://localhost:3000', // Local development
+    'https://poly-spak-enterprise-fronted-0sde.onrender.com', // Production frontend
+    'https://your-frontend-domain.vercel.app' // If using Vercel
+  ],
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
+};
+
+app.use(cors(corsOptions));
+
 // Middleware
 app.use(helmet());
-app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -54,6 +67,22 @@ app.use('/api/auth', auth);
 // Import and use admin routes
 import admin from './routes/admin.js';
 app.use('/api/admin', admin);
+
+// Import and use product routes
+import products from './routes/products.js';
+app.use('/api', products);
+
+// Import and use order routes
+import orders from './routes/orders.js';
+app.use('/api', orders);
+
+// Import and use payment routes
+import payments from './routes/payments.js';
+app.use('/api', payments);
+
+// Import and use website routes
+import website from './routes/website.js';
+app.use('/api', website);
 
 // app.use('/api/users', userRoutes);
 

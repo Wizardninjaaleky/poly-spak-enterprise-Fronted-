@@ -1,10 +1,10 @@
-const Product = require('../models/Product');
-const { validationResult } = require('express-validator');
+import Product from '../models/Product.js';
+import { validationResult } from 'express-validator';
 
 // @desc    Get all products
 // @route   GET /api/products
 // @access  Public
-exports.getProducts = async (req, res) => {
+export const getProducts = async (req, res) => {
   try {
     let query;
 
@@ -86,7 +86,7 @@ exports.getProducts = async (req, res) => {
 // @desc    Get single product
 // @route   GET /api/products/:id
 // @access  Public
-exports.getProduct = async (req, res) => {
+export const getProduct = async (req, res) => {
   try {
     const product = await Product.findById(req.params.id).populate('flashSale');
 
@@ -112,7 +112,7 @@ exports.getProduct = async (req, res) => {
 // @desc    Create new product
 // @route   POST /api/products
 // @access  Private/Admin
-exports.createProduct = async (req, res) => {
+export const createProduct = async (req, res) => {
   // Check for validation errors
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -140,7 +140,7 @@ exports.createProduct = async (req, res) => {
 // @desc    Update product
 // @route   PUT /api/products/:id
 // @access  Private/Admin
-exports.updateProduct = async (req, res) => {
+export const updateProduct = async (req, res) => {
   try {
     const product = await Product.findByIdAndUpdate(req.params.id, req.body, {
       new: true,
@@ -169,7 +169,7 @@ exports.updateProduct = async (req, res) => {
 // @desc    Delete product
 // @route   DELETE /api/products/:id
 // @access  Private/Admin
-exports.deleteProduct = async (req, res) => {
+export const deleteProduct = async (req, res) => {
   try {
     const product = await Product.findById(req.params.id);
 
