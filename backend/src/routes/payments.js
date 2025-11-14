@@ -4,7 +4,7 @@ import {
   submitPayment,
   getOrderPayment,
   getPaymentHistory,
-  verifyPayment,
+  verifyPaymentAdmin,
   getPayments,
   getPaymentStats,
 } from '../controllers/paymentController.js';
@@ -43,7 +43,7 @@ router.put('/verify/:orderId', [
   param('orderId', 'Invalid order ID').isMongoId(),
   body('action', 'Action is required').isIn(['confirm', 'reject']),
   body('rejectionReason').optional().isString().isLength({ max: 500 }),
-], verifyPayment);
+], verifyPaymentAdmin);
 
 router.get('/payments', getPayments);
 router.get('/payments/stats', getPaymentStats);

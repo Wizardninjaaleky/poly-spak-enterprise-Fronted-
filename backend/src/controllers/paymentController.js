@@ -171,7 +171,7 @@ export const getPaymentHistory = async (req, res) => {
 // @desc    Verify payment (Admin only)
 // @route   PUT /api/payments/verify/:orderId
 // @access  Private/Admin
-export const verifyPayment = async (req, res) => {
+export const verifyPaymentAdmin = async (req, res) => {
   const { action, rejectionReason } = req.body; // action: 'confirm' or 'reject'
 
   try {
