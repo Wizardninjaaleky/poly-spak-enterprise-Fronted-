@@ -58,4 +58,4 @@ couponSchema.pre('save', function(next) {
   next();
 });
 
-module.exports = mongoose.model('Coupon', couponSchema);
+export default mongoose.model('Coupon', couponSchema);

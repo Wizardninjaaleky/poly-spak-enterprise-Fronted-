@@ -42,4 +42,4 @@ productSchema.pre('save', function(next) {
 // Ensure virtual fields are serialized
 productSchema.set('toJSON', { virtuals: true });
 
-module.exports = mongoose.model('Product', productSchema);
+export default mongoose.model('Product', productSchema);

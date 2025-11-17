@@ -15,11 +15,21 @@ const corsOptions = {
   origin: [
     'http://localhost:3000', // Local development
     'https://poly-spak-enterprise-fronted-0sde.onrender.com', // Production frontend
+    'https://polyspackenterprises.co.ke', // Current live frontend
     'https://your-frontend-domain.vercel.app' // If using Vercel
   ],
-  credentials: true,
+  credentials: true, // Enable credentials for authentication
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
+  allowedHeaders: [
+    'Content-Type',
+    'Authorization',
+    'X-Requested-With',
+    'Accept',
+    'Origin',
+    'Access-Control-Request-Method',
+    'Access-Control-Request-Headers'
+  ],
+  optionsSuccessStatus: 200 // Some legacy browsers choke on 204
 };
 
 app.use(cors(corsOptions));
