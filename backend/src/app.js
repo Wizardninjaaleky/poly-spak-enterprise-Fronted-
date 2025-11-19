@@ -1,7 +1,7 @@
-import express from 'express';
-import cors from 'cors';
-import helmet from 'helmet';
-import dotenv from 'dotenv';
+const express = require('express');
+const cors = require('cors');
+const helmet = require('helmet');
+const dotenv = require('dotenv');
 
 // Load environment variables
 dotenv.config();
@@ -10,16 +10,11 @@ console.log('✅ app.js is loading...');
 
 const app = express();
 
-// CORS Configuration
-const corsOptions = {
-  origin: [
-    'http://localhost:3000', // Local development
-    'https://poly-spak-enterprise-fronted-0sde.onrender.com', // Production frontend
-    'https://polyspackenterprises.co.ke', // Current live frontend
-    'https://your-frontend-domain.vercel.app' // If using Vercel
-  ],
-  credentials: true, // Enable credentials for authentication
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+// ✅ ULTIMATE CORS FIX - Allow all origins for now to test
+app.use(cors({
+  origin: true, // Allow all origins
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
   allowedHeaders: [
     'Content-Type',
     'Authorization',
@@ -29,72 +24,86 @@ const corsOptions = {
     'Access-Control-Request-Method',
     'Access-Control-Request-Headers'
   ],
-  optionsSuccessStatus: 200 // Some legacy browsers choke on 204
-};
+  optionsSuccessStatus: 200
+}));
 
-app.use(cors(corsOptions));
+// Handle preflight requests explicitly
+app.options('*', (req, res) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS, PATCH');
+  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With, Accept, Origin, Access-Control-Request-Method, Access-Control-Request-Headers');
+  res.header('Access-Control-Allow-Credentials', 'true');
+  res.sendStatus(200);
+});
+
+// ✅ IMPROVED SECURITY HEADERS
+app.use(helmet({
+  contentSecurityPolicy: false, // Disable CSP to avoid conflicts
+  crossOriginEmbedderPolicy: false,
+  hsts: {
+    maxAge: 31536000,
+    includeSubDomains: true,
+    preload: true
+  }
+}));
+
+// Add custom security headers
+app.use((req, res, next) => {
+  res.setHeader('X-Content-Type-Options', 'nosniff');
+  res.setHeader('Cache-Control', 'public, max-age=300'); // 5 minutes cache
+  res.setHeader('X-Frame-Options', 'DENY'); // Keep for additional security
+  // Add CORS headers to all responses
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Credentials', 'true');
+  next();
+});
 
 // Middleware
-app.use(helmet());
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(express.json({ charset: 'utf-8' }));
+app.use(express.urlencoded({ extended: true, charset: 'utf-8' }));
 
-// Root route - THIS IS WHAT'S MISSING
+// Root route
 app.get('/', (req, res) => {
   res.json({
     success: true,
-    message: 'Poly Spark Enterprise Backend Server is running!',
-    timestamp: new Date().toISOString(),
-    environment: process.env.NODE_ENV || 'development',
-    version: '1.0.0'
+    message: "Welcome to Polyspack Enterprises API",
+    version: "1.0.0",
+    endpoints: {
+      auth: "/api/auth",
+      products: "/api/products",
+      orders: "/api/orders",
+      payments: "/api/payments",
+      admin: "/api/admin",
+      health: "/api/health"
+    }
   });
 });
 
-// Health check route
-app.get('/health', (req, res) => {
-  res.status(200).json({
-    success: true,
-    message: 'Server is healthy',
-    timestamp: new Date().toISOString()
-  });
-});
-
-// Test route
-app.get('/test', (req, res) => {
+// Health check
+app.get('/api/health', (req, res) => {
   res.json({
     success: true,
-    message: 'Test route working!',
+    message: "API is healthy",
     timestamp: new Date().toISOString()
   });
 });
 
+// Import routes
+import authRoutes from './routes/authRoutes.js';
+import adminRoutes from './routes/admin.js';
 
+// Mount routes
+app.use('/api/auth', authRoutes);
+app.use('/api/admin', adminRoutes);
 
-// Add your other routes here when ready
-import auth from './routes/auth.js';
-app.use('/api/auth', auth);
-
-// Import and use admin routes
-import admin from './routes/admin.js';
-app.use('/api/admin', admin);
-
-// Import and use product routes
-import products from './routes/products.js';
-app.use('/api', products);
-
-// Import and use order routes
-import orders from './routes/orders.js';
-app.use('/api', orders);
-
-// Import and use payment routes
-import payments from './routes/payments.js';
-app.use('/api', payments);
-
-// Import and use website routes
-import website from './routes/website.js';
-app.use('/api', website);
-
-// app.use('/api/users', userRoutes);
+// Test endpoint
+app.get('/api/test', (req, res) => {
+  res.json({
+    success: true,
+    message: '✅ Test endpoint working! Backend is connected.',
+    timestamp: new Date().toISOString()
+  });
+});
 
 // 404 handler for undefined routes
 app.use('*', (req, res) => {
@@ -114,4 +123,4 @@ app.use((error, req, res, next) => {
   });
 });
 
-export default app;
+module.exports = app;

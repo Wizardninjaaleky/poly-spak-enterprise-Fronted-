@@ -1,33 +1,72 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { useSelector } from 'react-redux';
-import { RootState } from '@/store/store';
+import { useSelector, useDispatch } from 'react-redux';
+import { RootState, AppDispatch } from '@/store/store';
+import { setCredentials } from '@/store/slices/authSlice';
 
 const AdminDashboardPage: React.FC = () => {
-  const { user } = useSelector((state: RootState) => state.auth);
+  const { user, token } = useSelector((state: RootState) => state.auth);
+  const dispatch = useDispatch<AppDispatch>();
   const [activeTab, setActiveTab] = useState('overview');
+  const [products, setProducts] = useState([]);
+  const [orders, setOrders] = useState([]);
+  const [users, setUsers] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
-  // Mock admin check - in real app, check user.role === 'admin'
   const isAdmin = user?.role === 'admin';
 
-  if (!user || !isAdmin) {
-    return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center">
-          <h2 className="text-2xl font-bold text-gray-900 mb-4">Access Denied</h2>
-          <p className="text-gray-600 mb-6">Admin&apos;s access required.</p>
-          <Link
-            href="/login"
-            className="bg-green-600 text-white px-6 py-3 rounded-md hover:bg-green-700 transition-colors"
-          >
-            Log In
-          </Link>
-        </div>
-      </div>
-    );
-  }
+  // Fetch data based on active tab
+  useEffect(() => {
+    const fetchData = async () => {
+      if (!token) return;
+
+      setLoading(true);
+      setError('');
+
+      try {
+        const headers = {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        };
+
+        if (activeTab === 'products') {
+          const response = await fetch('https://polyspackenterprises.co.ke/api/admin/products', { headers });
+          if (response.ok) {
+            const data = await response.json();
+            setProducts(data.data || []);
+          } else {
+            setError('Failed to load products');
+          }
+        } else if (activeTab === 'orders') {
+          const response = await fetch('https://polyspackenterprises.co.ke/api/admin/orders', { headers });
+          if (response.ok) {
+            const data = await response.json();
+            setOrders(data.data || []);
+          } else {
+            setError('Failed to load orders');
+          }
+        } else if (activeTab === 'users') {
+          const response = await fetch('https://polyspackenterprises.co.ke/api/admin/users', { headers });
+          if (response.ok) {
+            const data = await response.json();
+            setUsers(data.data || []);
+          } else {
+            setError('Failed to load users');
+          }
+        }
+      } catch (err) {
+        console.error('Error fetching data:', err);
+        setError('Failed to load data');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [activeTab, token]);
 
   const adminTabs = [
     { id: 'overview', label: 'Dashboard', icon: '📊' },
@@ -39,6 +78,23 @@ const AdminDashboardPage: React.FC = () => {
     { id: 'promotions', label: 'Promotions', icon: '⚡' },
     { id: 'analytics', label: 'Analytics', icon: '📈' },
   ];
+
+  if (!user || !isAdmin) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <h2 className="text-2xl font-bold text-gray-900 mb-4">Access Denied</h2>
+          <p className="text-gray-600 mb-6">Admin access required.</p>
+          <Link
+            href="/login"
+            className="bg-green-600 text-white px-6 py-3 rounded-md hover:bg-green-700 transition-colors"
+          >
+            Log In
+          </Link>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-50">
