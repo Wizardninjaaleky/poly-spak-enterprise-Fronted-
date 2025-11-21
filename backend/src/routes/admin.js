@@ -1,63 +1,56 @@
-import express from 'express';
-import { body } from 'express-validator';
-import {
-  getUsers,
-  getUser,
-  updateUser,
-  deleteUser,
-  createCoupon,
-  getCoupons,
-  updateCoupon,
-  deleteCoupon,
-  createFlashSale,
-  getFlashSales,
-  updateFlashSale,
-  deleteFlashSale,
-  getAnalytics,
-} from '../controllers/adminController.js';
-
+const express = require('express');
 const router = express.Router();
+const { authenticate, authorize } = require('../middleware/auth');
 
-import { protect, authorize } from '../middleware/auth.js';
+const {
+  getUsers,
+  updateUserRole,
+  updateUserStatus,
+  getProducts,
+  createProduct,
+  updateProduct,
+  deleteProduct,
+  getOrders,
+  updateOrderStatus,
+  getPayments,
+  verifyPayment,
+  getAnalytics,
+  getCategories,
+  createCategory,
+  updateCategory,
+  deleteCategory
+} = require('../controllers/adminController');
 
-// All admin routes require admin authorization
-router.use(protect);
-router.use(authorize('admin'));
+// Apply authentication and admin authorization to all routes
+router.use(authenticate);
+router.use(authorize(['admin']));
 
-// User management
-router.route('/users').get(getUsers);
-router.route('/users/:id').get(getUser).put(updateUser).delete(deleteUser);
+// User management routes
+router.get('/users', getUsers);
+router.put('/users/:id/role', updateUserRole);
+router.put('/users/:id/status', updateUserStatus);
 
-// Coupon management
-router
-  .route('/coupons')
-  .get(getCoupons)
-  .post(
-    [
-      body('code', 'Coupon code is required').not().isEmpty(),
-      body('type', 'Type must be percentage or fixed').isIn(['percentage', 'fixed']),
-      body('value', 'Value must be a positive number').isFloat({ min: 0 }),
-    ],
-    createCoupon
-  );
-router.route('/coupons/:id').put(updateCoupon).delete(deleteCoupon);
+// Product management routes
+router.get('/products', getProducts);
+router.post('/products', createProduct);
+router.put('/products/:id', updateProduct);
+router.delete('/products/:id', deleteProduct);
 
-// Flash sale management
-router
-  .route('/flashsales')
-  .get(getFlashSales)
-  .post(
-    [
-      body('title', 'Title is required').not().isEmpty(),
-      body('discount', 'Discount must be between 0 and 100').isFloat({ min: 0, max: 100 }),
-      body('startDate', 'Start date is required').isISO8601(),
-      body('endDate', 'End date is required').isISO8601(),
-    ],
-    createFlashSale
-  );
-router.route('/flashsales/:id').put(updateFlashSale).delete(deleteFlashSale);
+// Order management routes
+router.get('/orders', getOrders);
+router.put('/orders/:id/status', updateOrderStatus);
 
-// Analytics
-router.route('/analytics').get(getAnalytics);
+// Payment management routes
+router.get('/payments', getPayments);
+router.put('/payments/:id/verify', verifyPayment);
 
-export default router;
+// Category management routes
+router.get('/categories', getCategories);
+router.post('/categories', createCategory);
+router.put('/categories/:id', updateCategory);
+router.delete('/categories/:id', deleteCategory);
+
+// Analytics routes
+router.get('/analytics', getAnalytics);
+
+module.exports = router;
