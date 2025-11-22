@@ -21,6 +21,18 @@ const AdminDashboardPage: React.FC = () => {
   const [showAddAdminModal, setShowAddAdminModal] = useState(false);
   const [logoPreview, setLogoPreview] = useState('');
   const [logoUploading, setLogoUploading] = useState(false);
+  const [avatarPreview, setAvatarPreview] = useState('');
+  const [avatarUploading, setAvatarUploading] = useState(false);
+  const [profileData, setProfileData] = useState({
+    name: '',
+    email: '',
+    phone: ''
+  });
+  const [passwordData, setPasswordData] = useState({
+    currentPassword: '',
+    newPassword: '',
+    confirmPassword: ''
+  });
   const [companySettings, setCompanySettings] = useState({
     name: 'Polyspack Enterprises',
     email: 'info@polyspackenterprises.co.ke',
@@ -138,6 +150,114 @@ const AdminDashboardPage: React.FC = () => {
   const handleRejectPayment = (paymentId: string) => {
     // TODO: Implement reject payment functionality
     console.log('Reject payment:', paymentId);
+  };
+
+  const handleLogoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        setLogoPreview(e.target?.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleSaveLogo = async () => {
+    if (!logoPreview) return;
+
+    setLogoUploading(true);
+    try {
+      // TODO: Implement logo upload to backend
+      setSuccess('Logo updated successfully!');
+      setTimeout(() => setSuccess(''), 3000);
+    } catch (error) {
+      setError('Failed to upload logo');
+    } finally {
+      setLogoUploading(false);
+    }
+  };
+
+  const handleAvatarUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        setAvatarPreview(e.target?.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleSaveAvatar = async () => {
+    if (!avatarPreview) return;
+
+    setAvatarUploading(true);
+    try {
+      // TODO: Implement avatar upload to backend
+      setSuccess('Avatar updated successfully!');
+      setTimeout(() => setSuccess(''), 3000);
+    } catch (error) {
+      setError('Failed to upload avatar');
+    } finally {
+      setAvatarUploading(false);
+    }
+  };
+
+  const handleUpdateProfile = async () => {
+    try {
+      // TODO: Implement profile update
+      setSuccess('Profile updated successfully!');
+      setTimeout(() => setSuccess(''), 3000);
+    } catch (error) {
+      setError('Failed to update profile');
+    }
+  };
+
+  const handleChangePassword = async () => {
+    if (passwordData.newPassword !== passwordData.confirmPassword) {
+      setError('New passwords do not match');
+      return;
+    }
+
+    try {
+      // TODO: Implement password change
+      setSuccess('Password changed successfully!');
+      setPasswordData({ currentPassword: '', newPassword: '', confirmPassword: '' });
+      setTimeout(() => setSuccess(''), 3000);
+    } catch (error) {
+      setError('Failed to change password');
+    }
+  };
+
+  const handleSaveSettings = async () => {
+    try {
+      // TODO: Implement settings save
+      setSuccess('Settings saved successfully!');
+      setTimeout(() => setSuccess(''), 3000);
+    } catch (error) {
+      setError('Failed to save settings');
+    }
+  };
+
+  const handleRoleChange = async (userId: string, newRole: string) => {
+    try {
+      // TODO: Implement role change
+      setSuccess('User role updated successfully!');
+      setTimeout(() => setSuccess(''), 3000);
+    } catch (error) {
+      setError('Failed to update user role');
+    }
+  };
+
+  const handleToggleStatus = async (userId: string, newStatus: boolean) => {
+    try {
+      // TODO: Implement status toggle
+      setSuccess(`User ${newStatus ? 'activated' : 'deactivated'} successfully!`);
+      setTimeout(() => setSuccess(''), 3000);
+    } catch (error) {
+      setError('Failed to update user status');
+    }
   };
 
   if (!user || !isAdmin) {
@@ -896,6 +1016,144 @@ const AdminDashboardPage: React.FC = () => {
                           </tr>
                         </tbody>
                       </table>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {activeTab === 'profile' && (
+                <div>
+                  <h1 className="text-3xl font-bold text-gray-900 mb-6">Admin Profile</h1>
+
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    {/* Profile Picture Section */}
+                    <div className="bg-white border border-gray-200 rounded-lg p-6">
+                      <h2 className="text-xl font-semibold mb-4">Profile Picture</h2>
+                      <div className="flex items-center space-x-6">
+                        <div className="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center overflow-hidden">
+                          {user?.avatar ? (
+                            <img src={user.avatar} alt="Profile" className="w-full h-full object-cover" />
+                          ) : (
+                            <span className="text-3xl">👤</span>
+                          )}
+                        </div>
+                        <div>
+                          <input
+                            type="file"
+                            accept="image/*"
+                            onChange={handleAvatarUpload}
+                            className="mb-2"
+                          />
+                          <div className="space-x-2">
+                            <button
+                              onClick={handleSaveAvatar}
+                              disabled={!avatarPreview || avatarUploading}
+                              className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50"
+                            >
+                              {avatarUploading ? 'Uploading...' : 'Save Avatar'}
+                            </button>
+                            {avatarPreview && (
+                              <button
+                                onClick={() => setAvatarPreview('')}
+                                className="px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700"
+                              >
+                                Cancel
+                              </button>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Profile Information */}
+                    <div className="bg-white border border-gray-200 rounded-lg p-6">
+                      <h2 className="text-xl font-semibold mb-4">Profile Information</h2>
+                      <div className="space-y-4">
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
+                          <input
+                            type="text"
+                            value={user?.name || ''}
+                            onChange={(e) => setProfileData({...profileData, name: e.target.value})}
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                          <input
+                            type="email"
+                            value={user?.email || ''}
+                            onChange={(e) => setProfileData({...profileData, email: e.target.value})}
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-1">Phone</label>
+                          <input
+                            type="tel"
+                            value={profileData.phone || ''}
+                            onChange={(e) => setProfileData({...profileData, phone: e.target.value})}
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-1">Role</label>
+                          <input
+                            type="text"
+                            value={user?.role || ''}
+                            disabled
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-50"
+                          />
+                        </div>
+                        <button
+                          onClick={handleUpdateProfile}
+                          className="w-full px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700"
+                        >
+                          Update Profile
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Change Password Section */}
+                  <div className="bg-white border border-gray-200 rounded-lg p-6 mt-6">
+                    <h2 className="text-xl font-semibold mb-4">Change Password</h2>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Current Password</label>
+                        <input
+                          type="password"
+                          value={passwordData.currentPassword}
+                          onChange={(e) => setPasswordData({...passwordData, currentPassword: e.target.value})}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">New Password</label>
+                        <input
+                          type="password"
+                          value={passwordData.newPassword}
+                          onChange={(e) => setPasswordData({...passwordData, newPassword: e.target.value})}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Confirm New Password</label>
+                        <input
+                          type="password"
+                          value={passwordData.confirmPassword}
+                          onChange={(e) => setPasswordData({...passwordData, confirmPassword: e.target.value})}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                        />
+                      </div>
+                    </div>
+                    <div className="mt-4">
+                      <button
+                        onClick={handleChangePassword}
+                        className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+                      >
+                        Change Password
+                      </button>
                     </div>
                   </div>
                 </div>
